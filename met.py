@@ -28,7 +28,9 @@ t_VECTOR = r'_[a-z0-9]+'
 
 R = []
 U = {}
+seq = ""
 T = {}
+
 functions = {'exp':math.exp,'sin':math.sin}
 global idx
 idx = 0
@@ -65,11 +67,14 @@ precedence = (
 
 def p_statement_expr(t):
     'statement : expression'
-    print(t[1])
-    print(R)
+    # print(t[1])
+    # print("R = ",R)
     for r in R:
-        print(f"{r[0]} = {r[1]} {r[3]} {r[2]}")
-
+        # print(f"{r[0]} = {r[1]} {r[3]} {r[2]}")
+        try:
+            seq += f"{r[0]} = {r[1]} {r[3]} {r[2]}"
+        except:
+            seq = ""
 def p_expression_group(t):
     'expression : LPAREN expression RPAREN'
     t[0] = t[2]
@@ -80,9 +85,9 @@ def p_transp(t):
     """
     global idx
     idx += 1
-    print(idx)
+    # print(idx)
     data = [f"x{idx}", t[1][0], "", "^T"]
-    print(data)
+    # print(data)
     R.append(data)
     t[0] = data
     tp = calc_type(data, T)
@@ -101,7 +106,7 @@ def p_expression_binoper(t):
     idx += 1
     # print(idx,t[1])
     data = [f"x{idx}",t[1][0],t[3][0],t[2]]
-    print(data)
+    # print(data)
     R.append(data)
     t[0] = data
     tp = calc_type(data,T)
@@ -111,13 +116,13 @@ def p_expression_call(t):
     'expression : SCALAR LPAREN expression RPAREN'
     global idx
     idx += 1
-    print(idx,t[1])
+    # print(idx,t[1])
     data = [f"x{idx}", t[3][0], '', t[1]]
-    print(data)
+    # print(data)
     R.append(data)
     t[0] = data
     tp = calc_type(data, T)
-    print("CALL",tp)
+    # print("CALL",tp)
     T[data[0]] = tp
 
 
@@ -125,14 +130,14 @@ def p_expression_uminus(t):
     'expression : INVERSE expression'
     global idx
     idx += 1
-    print(idx)
+    # print(idx)
     data = [f"x{idx}", t[2][0], "", "~"]
-    print(data)
+    # print(data)
     R.append(data)
     t[0] = data
     tp = calc_type(data, T)
     T[data[0]] = tp
-    print(data[0], tp)
+    # print(data[0], tp)
 
 def p_error(t):
     print("Syntax error at '%s'" % t.value)
@@ -144,35 +149,18 @@ def p_expression_matrix(t):
                  | NUMBER
                  | VECTOR
     '''
-    print("init: ",str(t[1]))
+    # print("init: ",str(t[1]))
     t[0] = [str(t[1]),"","",""]
 
 
 mylex = lex.lex()
 
-txt = "((A2 @ ~B) + ((3.0 + t2)*C/E) - (a1*exp(sin(2*B)))*A^T) @ _z2 + _w1"
-txt2 = "~(A @ B^T) + B @ exp(C)^T"
-txt_lsm = "(Y^T @ X) @ (~(eps*I + X^T @ X))"
-txt_polynom = "A**3 + (a**3 + 3)* A**2 + 3*A + I"
-txt_det = "_a @ _b + det(A)"
-txt_power = "AB12 ** 4"
-expr = txt_power
-mylex.input(expr)
-while True:
-    tok = mylex.token()  # читаем следующий токен
-    if not tok: break  # закончились печеньки
-    print(tok)
-    T[str(tok.value)] = tok.type
-    if tok.type in U:
-        U[tok.type].append(tok.value)
-    else:
-        U[tok.type] = [tok.value]
-# print(U)
+
 parser = yacc.yacc()
 
-parser.parse(expr)
-code = translate(R,T)
-print(code)
-print(U)
+# parser.parse(expr)
+# code = translate(R,T)
+# print(code)
+# print(T)
 
 

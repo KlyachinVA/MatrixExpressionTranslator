@@ -41,7 +41,7 @@ def calc_type(data,T):
         if a in T and b in T:
             res = table_types[op][T[a] + "_" + T[b]]
         if a in T and b not in T:
-            print("Op ",op)
+            # print("Op ",op)
             res = table_types[op][T[a] + "_"]
         if a not in T and b in T:
             res = table_types[op]["_" + T[b]]

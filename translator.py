@@ -6,11 +6,13 @@ def Mul(x,a,b,Tr):
     t_x = Tr[x]
     if t_x == "MATRIX":
         res =  f"{x}.Mul({a},{b})\n"
+        refs.append(x)
     if t_x == "VECTOR":
         res = f"{x}.MulVec({a},{b})\n"
+        refs.append(x)
     if t_a == 'VECTOR' and t_b == 'VECTOR':
         res = f"{x} := mat.Dot({a},{b})\n"
-        refs.append(x)
+
     return res
 
 def Add(x,a,b,Tr):
@@ -20,10 +22,12 @@ def Add(x,a,b,Tr):
     t_x = Tr[x]
     if t_a == 'MATRIX' and t_b == 'MATRIX':
         res = f"{x}.Add({a},{b})\n"
+        refs.append(x)
     elif (t_a == 'SCALAR' or t_a == 'NUMBER') and (t_b == 'SCALAR' or t_b == 'NUMBER'):
         res = f"{x} := {a} + {b}\n"
     elif t_a == 'VECTOR' and t_b == 'VECTOR':
         res = f"{x}.AddVec({a},{b})\n"
+        refs.append(x)
     return res
 
 def Sub(x,a,b,Tr):
@@ -33,10 +37,12 @@ def Sub(x,a,b,Tr):
     t_x = Tr[x]
     if t_a == 'MATRIX' and t_b == 'MATRIX':
         res = f"{x}.Sub({a},{b})\n"
+        refs.append(x)
     elif (t_a == 'SCALAR' or t_a == 'NUMBER') and (t_b == 'SCALAR' or t_b == 'NUMBER'):
         res = f"{x} := {a} - {b}\n"
     elif t_a == 'VECTOR' and t_b == 'VECTOR':
         res = f"{x}.SubVec({a},{b})\n"
+        refs.append(x)
     return res
 
 def MulElem(x,a,b,Tr):
@@ -46,8 +52,10 @@ def MulElem(x,a,b,Tr):
     t_x = Tr[x]
     if (t_a == "SCALAR" or t_a == "NUMBER") and t_b == 'MATRIX':
         res = f"{x}.Scale({a},{b})\n"
+        refs.append(x)
     elif t_a == "MATRIX" and (t_a == 'SCALAR' or t_b == 'NUMBER'):
         res = f"{x}.MulElem({a},{b})\n"
+        refs.append(x)
     elif (t_a == 'SCALAR' or t_a == 'NUMBER') and (t_b == 'SCALAR' or t_b == 'NUMBER'):
         res = f"{x} := {a} * {b}\n"
 
@@ -58,11 +66,13 @@ def MulElem(x,a,b,Tr):
 def DivElem(x,a,b,Tr):
     res = "?"
     t_type = Tr[x]
+    refs.append(x)
     return f"{x}.DivElem({a},{b})\n"
 
 def Exp(x,a,b,Tr):
     res = "?"
     t_type = Tr[x]
+    refs.append(x)
     return f"{x}.Exp({a})\n"
 
 def Det(x,a,b,Tr):
@@ -73,12 +83,13 @@ def Det(x,a,b,Tr):
 def Inv(x,a,b,Tr):
     res = "?"
     t_type = Tr[x]
+    refs.append(x)
     return f"{x}.Inverse({a})\n"
 
 def T(x,a,b,Tr):
     res = "?"
     t_type = Tr[x]
-    refs.append(x)
+
     return f"{x} := {a}.T()\n"
 def Power(x,a,b,Tr):
     res = '?'
@@ -86,6 +97,7 @@ def Power(x,a,b,Tr):
     t_b = Tr[b]
     t_x = Tr[x]
     if t_a == 'MATRIX':
+        refs.append(x)
         res = f"{x}.Power({a},{b})\n"
     elif t_a == 'SCALAR' or t_a == 'NUMBER':
         res = f"{x} := ({a})**({b})\n"
